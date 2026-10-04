@@ -12,7 +12,7 @@ Build and test your three tools in `tools.py` first. Then come here.
 
     python agent.py          runs both example paths below
 """
-
+import re
 import config
 import trace
 from tools import search_listings, suggest_outfit, create_fit_card
@@ -108,40 +108,95 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     session = new_session(query, wardrobe)
 
     # TODO: delete these two lines and build the loop.
-    session["error"] = "The planning loop isn't built yet — see the TODO in agent.py."
+    # Parse optional size, for example: "size M"
+    size_match = re.search(
+        r"\b(?:size\s*)?(XXS|XS|S|M|L|XL|XXL)\b",
+        query,
+        re.IGNORECASE,
+    )
+
+    # Parse optional maximum price, for example: "under $30"
+    price_match = re.search(
+        r"\b(?:under|below|max(?:imum)?(?:\s+price)?)\s*\$?\s*(\d+(?:\.\d+)?)",
+        query,
+        re.IGNORECASE,
+    )
+
+    size = size_match.group(1).upper() if size_match else None
+    max_price = float(price_match.group(1)) if price_match else None
+
+    description = query
+
+    if size_match:
+        description = description.replace(size_match.group(0), "")
+    if price_match:
+        description = description.replace(price_match.group(0), "")
+
+    description = re.sub(r"\s+", " ", description).strip(" ,")
+
+    session["parsed"] = {
+        "description": description,
+        "size": size,
+        "max_price": max_price,
+    }
+
+    try:
+        session["search_results"] = search_listings(
+            session["parsed"]["description"],
+            session["parsed"]["size"],
+            session["parsed"]["max_price"],
+        )
+
+        # The branch: stop immediately when no listing was found.
+        if not session["search_results"]:
+            session["error"] = (
+                "No listings matched your search. Try changing the description, "
+                "removing the size filter, or increasing the maximum price."
+            )
+            return session
+
+        session["selected_item"] = session["search_results"][0]
+
+        session["outfit_suggestion"] = suggest_outfit(
+            session["selected_item"],
+            session["wardrobe"],
+        )
+
+        session["fit_card"] = create_fit_card(
+            session["outfit_suggestion"],
+            session["selected_item"],
+        )
+
+    except ModelUnavailable as exc:
+        session["error"] = f"The model is unavailable: {exc}"
+
     return session
+
+
+
 
 
 # ── running it directly ───────────────────────────────────────────────────────
 
 def _show(session: dict) -> None:
-    if session["error"]:
-        print(f"  stopped: {session['error']}")
-        print(f"  fit_card is {session['fit_card']!r} — it should still be None here")
-        return
-
-    item = session["selected_item"] or {}
-    print(f"  found:    {item.get('title')} — ${item.get('price')} on {item.get('platform')}")
-    print(f"  outfit:   {session['outfit_suggestion']}")
-    print(f"  fit card: {session['fit_card']}")
+    print("Search results:", len(session["search_results"]))
+    print("Selected item:", session["selected_item"])
+    print("Outfit suggestion:", session["outfit_suggestion"])
+    print("Fit card:", session["fit_card"])
+    print("Error:", session["error"])
 
 
 if __name__ == "__main__":
-    from utils.data_loader import get_example_wardrobe
+    wardrobe = {
+        "items": [
+            "white sneakers",
+            "straight-leg jeans",
+            "black crossbody bag",
+        ]
+    }
 
-    print("=== A query the data can match ===")
-    _show(run_agent(
-        query="looking for a vintage graphic tee under $30",
-        wardrobe=get_example_wardrobe(),
-    ))
+    print("HAPPY PATH")
+    _show(run_agent("vintage graphic tee under $30", wardrobe))
 
-    print("\n=== A query it can't ===")
-    _show(run_agent(
-        query="designer ballgown size XXS under $5",
-        wardrobe=get_example_wardrobe(),
-    ))
-
-    print(
-        "\nThe second one should stop before the fit card. If both paths look "
-        "the same,\nthe branch isn't doing anything yet."
-    )
+    print("\nEMPTY PATH")
+    _show(run_agent("rare astronaut costume under $1", wardrobe))
