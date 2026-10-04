@@ -19,7 +19,7 @@ type, exactly what it returns, and what it returns when it has nothing to give.
 That last line is what your loop branches on. "Returns a list" earns nothing —
 the description has to say what is *in* the list.
 """
-
+import re
 import config  # noqa: F401 — you'll use this in search_listings
 from generate import generate
 from utils.data_loader import load_listings
@@ -103,7 +103,38 @@ def search_listings(
         python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
     """
     # TODO: replace this with your implementation
-    return []
+    wanted_keywords = _keywords(description)
+    matches = []
+
+    for listing in load_listings():
+        price = float(listing.get("price", 0))
+
+        if max_price is not None and price > max_price:
+            continue
+
+        if size and not _size_matches(size, str(listing.get("size", ""))):
+            continue
+
+        searchable_text = " ".join(
+            [
+                str(listing.get("title", "")),
+                str(listing.get("description", "")),
+                str(listing.get("category", "")),
+                " ".join(str(x) for x in listing.get("style_tags", [])),
+                " ".join(str(x) for x in listing.get("colors", [])),
+                str(listing.get("brand") or ""),
+            ]
+        )
+
+        score = len(wanted_keywords & _keywords(searchable_text))
+
+        if score > 0:
+            matches.append((score, listing))
+
+    matches.sort(key=lambda pair: pair[0], reverse=True)
+
+    limit = getattr(config, "SEARCH_RESULT_LIMIT", len(matches))
+    return [listing for _, listing in matches[:limit]]
 
 
 # ── Tool 2: suggest_outfit ────────────────────────────────────────────────────
@@ -137,7 +168,41 @@ def suggest_outfit(new_item: dict, wardrobe: dict) -> str:
         python -c "from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_example_wardrobe()))"
     """
     # TODO: replace this with your implementation
-    return ""
+    item_text = (
+        f"Title: {new_item.get('title', 'Unknown item')}\n"
+        f"Description: {new_item.get('description', '')}\n"
+        f"Category: {new_item.get('category', '')}\n"
+        f"Colors: {', '.join(map(str, new_item.get('colors', [])))}\n"
+        f"Size: {new_item.get('size', '')}"
+    )
+
+    wardrobe_items = (wardrobe or {}).get("items", [])
+
+    if wardrobe_items:
+        wardrobe_text = "\n".join(
+            f"- {item}" for item in wardrobe_items
+        )
+        prompt = f"""
+Suggest one or two practical outfits using this new thrift listing and items
+from the user's wardrobe. Name the wardrobe pieces you use.
+
+NEW ITEM:
+{item_text}
+
+USER'S WARDROBE:
+{wardrobe_text}
+"""
+    else:
+        prompt = f"""
+Suggest one or two practical outfit ideas for this thrift listing.
+The user has not provided any wardrobe items, so give general styling advice.
+
+NEW ITEM:
+{item_text}
+"""
+
+    response = generate(prompt)
+    return str(response).strip()
 
 
 # ── Tool 3: create_fit_card ───────────────────────────────────────────────────
@@ -177,4 +242,21 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
         python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
     """
     # TODO: replace this with your implementation
-    return ""
+    if not outfit or not outfit.strip():
+        return "No outfit suggestion was available for this item."
+
+    prompt = f"""
+Write a short, natural social-media fit card in two to four sentences.
+
+Mention the item title, its price, and its platform once each. Describe the
+outfit vibe specifically. Do not write a product listing or use bullet points.
+
+ITEM TITLE: {new_item.get('title', 'Unknown item')}
+PRICE: {new_item.get('price', 'Unknown')}
+PLATFORM: {new_item.get('platform', 'Unknown')}
+OUTFIT SUGGESTION:
+{outfit}
+"""
+
+    response = generate(prompt)
+    return str(response).strip()
