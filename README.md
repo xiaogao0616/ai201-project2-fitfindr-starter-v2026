@@ -13,10 +13,11 @@
 > python app.py ask 'vintage graphic tee under $30'
 > ```
 >
-> All three tools are stubs, so that last command will do nothing useful yet.
-> That's the starting position.
+> The three tools and the planning branch are implemented. The query above
+> returns outfit suggestions and a fit card when the model is available.
 >
-> **The rest of this file is your submission.** Fill it in as you go.
+> The first five sections document the Unit 3 submission; Unit 4 sections
+> remain below for the next unit.
 
 ---
 
@@ -54,7 +55,8 @@ that the user should change the search conditions.
 - **What it does:** Searches listings by description keywords, optional size, and optional maximum price.
 - **Inputs:** `description` (str), `size` (str or None), `max_price` (float or None)
 - **Returns:** A list of listing dictionaries, sorted by keyword relevance, containing `id`, `title`, `description`, `category`, `style_tags`, `size`, `condition`, `price`, `colors`, `brand`, and `platform`.
-- **When it has nothing:** Returns an empty list `[]` when no listings match.
+- **Matching rules:** Case-insensitive keyword overlap across title, description, category, style tags, colors, and brand; common stopwords are ignored. Any positive overlap qualifies. Higher scores come first; ties preserve data order. Returns at most `config.SEARCH_RESULT_LIMIT` (10) items. Price is an inclusive ceiling. Sizes match complete slash-separated tokens (M matches S/M, L does not match XL); parenthetical notes are ignored, and one-size items match any requested size.
+- **When it has nothing:** Returns an empty list `[]` when no listings match, including descriptions with no searchable keywords.
 
 ### `suggest_outfit`
 
@@ -86,57 +88,145 @@ that the user should change the search conditions.
 
 ## Sample Run
 
-<!-- Two things go here.
+Captured from terminal runs. Normal runs may reuse cached model responses; the
+three-card variation check explicitly disables caching. These are build checks,
+not the five-trial Unit 4 acceptance evaluation.
 
-     1. One FULL query and its output, pasted as text.
-     2. Your three per-tool terminal tests — the command and what it printed. -->
+**Full query**
 
-**One full query**
+```text
+$ python app.py ask 'vintage graphic tee under $30'
+Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop
 
+  Outfit:   Here are two practical, Y2K-inspired outfits using the new butterfly baby tee and pieces from your wardrobe:
+
+### Outfit 1: Classic Y2K Streetwear
+This look plays on the iconic early 2000s proportion play of a fitted top and baggy bottoms.
+* **New Item:** Y2K Baby Tee — Butterfly Print
+* **Wardrobe Pieces Used:**
+  * **Baggy straight-leg jeans, dark wash** (w_001)
+  * **Chunky white sneakers** (w_007)
+  * **Black crossbody bag** (w_010)
+
+### Outfit 2: Edgy Casual Contrast
+This outfit tones down the sweetness of the butterfly tee by pairing it with earth tones and utilitarian outerwear, creating a balanced, everyday look.
+* **New Item:** Y2K Baby Tee — Butterfly Print
+* **Wardrobe Pieces Used:**
+  * **Wide-leg khaki trousers** (w_002)
+  * **Vintage black denim jacket** (w_006)
+  * **Black combat boots** (w_008)
+
+  Fit card: Channel that early 2000s streetwear energy by pairing this Y2K Baby Tee — Butterfly Print with dark wash baggy jeans and chunky white sneakers. For just $18.0 on depop, it's the ultimate fitted top to balance out relaxed proportions. Grab it now and complete the look with your favorite black crossbody bag!
+
+0 model calls this session, 2 served from cache
 ```
-$ python app.py ask '...'
 
+**search_listings**
+
+```text
+$ python -c "from tools import search_listings; print(search_listings('graphic tee', size='M', max_price=30))"
+[{'id': 'lst_002', 'title': 'Y2K Baby Tee — Butterfly Print', 'description': 'Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.', 'category': 'tops', 'style_tags': ['y2k', 'vintage', 'graphic tee', 'cottagecore'], 'size': 'S/M', 'condition': 'excellent', 'price': 18.0, 'colors': ['white', 'pink', 'purple'], 'brand': None, 'platform': 'depop'}, {'id': 'lst_017', 'title': 'Mesh Long-Sleeve Top — Black', 'description': 'Sheer black mesh long-sleeve. Great for layering under a graphic tee or over a bralette. Stretchy material, fits true to size.', 'category': 'tops', 'style_tags': ['y2k', 'grunge', 'goth', 'layering'], 'size': 'S/M', 'condition': 'excellent', 'price': 15.0, 'colors': ['black'], 'brand': None, 'platform': 'depop'}]
 ```
 
-**The three tools, tested one at a time**
+**suggest_outfit**
 
+```text
+$ python -c "from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_example_wardrobe()))"
+Here are two practical, everyday outfits featuring the new Vintage Levi's 501 Jeans:
+
+### Outfit 1: Casual & Cozy Everyday
+A relaxed, effortless look that leans into vintage basics. The fitted tank balances the oversized sweater for an easy high-low silhouette.
+
+* **New Item:** Vintage Levi's 501 Jeans — Medium Wash
+* **Wardrobe Pieces Used:**
+  * White ribbed tank top (`w_003`)
+  * Oversized grey crewneck sweatshirt (`w_004`)
+  * Chunky white sneakers (`w_007`)
+  * Black crossbody bag (`w_010`)
+
+---
+
+### Outfit 2: Edgy Streetwear
+A classic denim-and-hoodie combination with sharp contrasts. Layering the cropped hoodie over the vintage wash gives it a cool, urban edge.
+
+* **New Item:** Vintage Levi's 501 Jeans — Medium Wash
+* **Wardrobe Pieces Used:**
+  * Black cropped zip hoodie (`w_005`)
+  * Black combat boots (`w_008`)
+  * Brown leather belt (`w_009`)
 ```
-$ python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
 
+**create_fit_card**
+
+```text
+$ python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
+Scored these Vintage Levi's 501 Jeans in a gorgeous medium wash on depop for just $38! They give off that effortless, off-duty 90s model vibe when paired with a crisp oversized blazer and fresh white sneakers. It's the ultimate everyday look that feels both timeless and completely dialed-in.
 ```
 
-```
-$ python -c "from tools import suggest_outfit; ..."
+**Empty search**
 
+```text
+$ python app.py ask 'rare astronaut costume under $1'
+No listings matched your search. Try changing the description, removing the size filter, or increasing the maximum price.
+
+0 model calls this session
 ```
 
-```
-$ python -c "from tools import create_fit_card; ..."
+**Empty wardrobe**
 
+```text
+$ python -c "from tools import suggest_outfit; from utils.data_loader import get_empty_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_empty_wardrobe()))"
+Here are two easy, versatile ways to style vintage medium-wash Levi's 501s:
+
+**1. The Classic Casual Look**
+* **Top:** A tucked-in, crisp white cotton t-shirt or a relaxed-fit grey crewneck sweatshirt.
+* **Footwear:** Classic white canvas sneakers (like Converse or Vans) or retro runners.
+* **Accessories:** A simple brown leather belt and a canvas tote bag.
+* *Why it works:* It lets the vintage jeans take center stage with an effortless, timeless aesthetic.
+
+**2. Elevated Denim-on-Denim**
+* **Top:** A slightly darker or lighter button-down denim shirt worn open over a black baby tee, or fully buttoned and half-tucked.
+* **Footwear:** Black leather loafers or ankle boots.
+* **Accessories:** A structured black leather belt and minimalist silver jewelry.
+* *Why it works:* Playing with different denim shades adds texture and a chic, intentionally styled edge to vintage staples.
+```
+
+**Three uncached fit cards**
+
+```text
+$ python -c "import config; config.CACHE_ENABLED = False; from tools import create_fit_card; from utils.data_loader import load_listings; cards = [create_fit_card('jeans and white sneakers', load_listings()[0]) for _ in range(3)]; [print(f'Run {i}: {card}') for i, card in enumerate(cards, 1)]; print(f'Unique outputs: {len(set(cards))}/3')"
+Run 1: Scored these dreamy Vintage Levi's 501 Jeans in a classic medium wash on depop for just $38! They anchor the ultimate effortless off-duty look when paired with crisp white sneakers and an oversized vintage tee. It's giving cool, timeless everyday comfort that never goes out of style.
+Run 2: Scored these Vintage Levi's 501 Jeans in a perfect medium wash on depop for just $38! They bring the ultimate effortlessly cool 90s indie-sleaze aesthetic to your everyday wardrobe. Just pair them with your favorite crisp white sneakers and an oversized vintage tee for a casual, coffee-run-ready vibe.
+Run 3: Channeling total 90s off-duty model energy, these Vintage Levi's 501 Jeans—Medium Wash are an absolute must-have. Just style them with a classic baby tee and crisp white sneakers for that effortless weekend look. Snag this dreamy pair on depop right now for only $38.
+Unique outputs: 3/3
+```
+
+**Local regression check (model calls mocked)**
+
+```text
+$ python test_agent.py
+PASS: size and price filters, empty cases, session handoff, and early stop (mocked model).
 ```
 
 ---
 
 ## How I Used AI
 
-<!-- Two specific moments. What you asked, what came back, what you changed.
+The following two moments came from the final review with Codex.
 
-     "I used Claude to help me code" is not enough.
+**Moment 1 — checking the implementation**
 
-     "I gave Claude my search_listings spec. It returned None on no match
-     instead of an empty list, so I changed it" is the level we want. -->
+- *What I asked for:* I asked Codex to check my completed milestones against the assignment before finishing the write-up.
+- *What came back:* It found that `_size_tokens` used `p.strip().upper` instead of `p.strip().upper()`, so size filtering received method objects and could crash. It also checked the successful and empty-search branches and the session handoff.
+- *What I changed:* With Codex's help, I added the missing parentheses and added `test_agent.py` to check size boundaries, price filtering, session handoff, and stopping before the model tools on an empty search. These local checks use mocked model outputs and do not claim to be the acceptance evaluation.
 
-**Moment 1**
+**Moment 2 — finishing the submission documentation**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* In the same request, I asked Codex to help finish the last milestone, the write-up and submission preparation.
+- *What came back:* It identified a missing full-query transcript and abbreviated per-tool commands containing `...`. It ran the commands and also checked an empty wardrobe and three uncached captions for the same input; the three captions were different.
+- *What I changed:* With Codex's help, I replaced the placeholders with runnable commands and captured text output, clarified the search rules, and recorded these actual uses of AI. My existing acceptance criteria were left unchanged.
 
-**Moment 2**
-
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+**Repository for this unit and the next:** https://github.com/xiaogao0616/ai201-project2-fitfindr-starter-v2026
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 

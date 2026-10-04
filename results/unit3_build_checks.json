@@ -1,0 +1,37 @@
+[
+  [
+    "Full query",
+    "python app.py ask 'vintage graphic tee under $30'",
+    "Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop\n\n  Outfit:   Here are two practical, Y2K-inspired outfits using the new butterfly baby tee and pieces from your wardrobe:\n\n### Outfit 1: Classic Y2K Streetwear\nThis look plays on the iconic early 2000s proportion play of a fitted top and baggy bottoms. \n* **New Item:** Y2K Baby Tee — Butterfly Print\n* **Wardrobe Pieces Used:** \n  * **Baggy straight-leg jeans, dark wash** (w_001)\n  * **Chunky white sneakers** (w_007)\n  * **Black crossbody bag** (w_010)\n\n### Outfit 2: Edgy Casual Contrast\nThis outfit tones down the sweetness of the butterfly tee by pairing it with earth tones and utilitarian outerwear, creating a balanced, everyday look.\n* **New Item:** Y2K Baby Tee — Butterfly Print\n* **Wardrobe Pieces Used:** \n  * **Wide-leg khaki trousers** (w_002)\n  * **Vintage black denim jacket** (w_006)\n  * **Black combat boots** (w_008)\n\n  Fit card: Channel that early 2000s streetwear energy by pairing this Y2K Baby Tee — Butterfly Print with dark wash baggy jeans and chunky white sneakers. For just $18.0 on depop, it's the ultimate fitted top to balance out relaxed proportions. Grab it now and complete the look with your favorite black crossbody bag!\n\n0 model calls this session, 2 served from cache"
+  ],
+  [
+    "search_listings",
+    "python -c \"from tools import search_listings; print(search_listings('graphic tee', size='M', max_price=30))\"",
+    "[{'id': 'lst_002', 'title': 'Y2K Baby Tee — Butterfly Print', 'description': 'Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.', 'category': 'tops', 'style_tags': ['y2k', 'vintage', 'graphic tee', 'cottagecore'], 'size': 'S/M', 'condition': 'excellent', 'price': 18.0, 'colors': ['white', 'pink', 'purple'], 'brand': None, 'platform': 'depop'}, {'id': 'lst_017', 'title': 'Mesh Long-Sleeve Top — Black', 'description': 'Sheer black mesh long-sleeve. Great for layering under a graphic tee or over a bralette. Stretchy material, fits true to size.', 'category': 'tops', 'style_tags': ['y2k', 'grunge', 'goth', 'layering'], 'size': 'S/M', 'condition': 'excellent', 'price': 15.0, 'colors': ['black'], 'brand': None, 'platform': 'depop'}]"
+  ],
+  [
+    "suggest_outfit",
+    "python -c \"from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_example_wardrobe()))\"",
+    "Here are two practical, everyday outfits featuring the new Vintage Levi's 501 Jeans:\n\n### Outfit 1: Casual & Cozy Everyday\nA relaxed, effortless look that leans into vintage basics. The fitted tank balances the oversized sweater for an easy high-low silhouette.\n\n* **New Item:** Vintage Levi's 501 Jeans — Medium Wash\n* **Wardrobe Pieces Used:**\n  * White ribbed tank top (`w_003`)\n  * Oversized grey crewneck sweatshirt (`w_004`)\n  * Chunky white sneakers (`w_007`)\n  * Black crossbody bag (`w_010`)\n\n---\n\n### Outfit 2: Edgy Streetwear\nA classic denim-and-hoodie combination with sharp contrasts. Layering the cropped hoodie over the vintage wash gives it a cool, urban edge.\n\n* **New Item:** Vintage Levi's 501 Jeans — Medium Wash\n* **Wardrobe Pieces Used:**\n  * Black cropped zip hoodie (`w_005`)\n  * Black combat boots (`w_008`)\n  * Brown leather belt (`w_009`)"
+  ],
+  [
+    "create_fit_card",
+    "python -c \"from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))\"",
+    "Scored these Vintage Levi's 501 Jeans in a gorgeous medium wash on depop for just $38! They give off that effortless, off-duty 90s model vibe when paired with a crisp oversized blazer and fresh white sneakers. It's the ultimate everyday look that feels both timeless and completely dialed-in."
+  ],
+  [
+    "Empty search",
+    "python app.py ask 'rare astronaut costume under $1'",
+    "No listings matched your search. Try changing the description, removing the size filter, or increasing the maximum price.\n\n0 model calls this session"
+  ],
+  [
+    "Empty wardrobe",
+    "python -c \"from tools import suggest_outfit; from utils.data_loader import get_empty_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_empty_wardrobe()))\"",
+    "Here are two easy, versatile ways to style vintage medium-wash Levi's 501s:\n\n**1. The Classic Casual Look**\n* **Top:** A tucked-in, crisp white cotton t-shirt or a relaxed-fit grey crewneck sweatshirt.\n* **Footwear:** Classic white canvas sneakers (like Converse or Vans) or retro runners.\n* **Accessories:** A simple brown leather belt and a canvas tote bag. \n* *Why it works:* It lets the vintage jeans take center stage with an effortless, timeless aesthetic.\n\n**2. Elevated Denim-on-Denim**\n* **Top:** A slightly darker or lighter button-down denim shirt worn open over a black baby tee, or fully buttoned and half-tucked.\n* **Footwear:** Black leather loafers or ankle boots.\n* **Accessories:** A structured black leather belt and minimalist silver jewelry.\n* *Why it works:* Playing with different denim shades adds texture and a chic, intentionally styled edge to vintage staples."
+  ],
+  [
+    "Three uncached fit cards",
+    "python -c \"import config; config.CACHE_ENABLED = False; from tools import create_fit_card; from utils.data_loader import load_listings; cards = [create_fit_card('jeans and white sneakers', load_listings()[0]) for _ in range(3)]; [print(f'Run {i}: {card}') for i, card in enumerate(cards, 1)]; print(f'Unique outputs: {len(set(cards))}/3')\"",
+    "Run 1: Scored these dreamy Vintage Levi's 501 Jeans in a classic medium wash on depop for just $38! They anchor the ultimate effortless off-duty look when paired with crisp white sneakers and an oversized vintage tee. It's giving cool, timeless everyday comfort that never goes out of style.\nRun 2: Scored these Vintage Levi's 501 Jeans in a perfect medium wash on depop for just $38! They bring the ultimate effortlessly cool 90s indie-sleaze aesthetic to your everyday wardrobe. Just pair them with your favorite crisp white sneakers and an oversized vintage tee for a casual, coffee-run-ready vibe.\nRun 3: Channeling total 90s off-duty model energy, these Vintage Levi's 501 Jeans—Medium Wash are an absolute must-have. Just style them with a classic baby tee and crisp white sneakers for that effortless weekend look. Snag this dreamy pair on depop right now for only $38.\nUnique outputs: 3/3"
+  ]
+]
