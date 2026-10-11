@@ -57,6 +57,7 @@ that the user should change the search conditions.
 - **Returns:** A list of listing dictionaries, sorted by keyword relevance, containing `id`, `title`, `description`, `category`, `style_tags`, `size`, `condition`, `price`, `colors`, `brand`, and `platform`.
 - **Matching rules:** Case-insensitive keyword overlap across title, description, category, style tags, colors, and brand; common stopwords are ignored. Any positive overlap qualifies. Higher scores come first; ties preserve data order. Returns at most `config.SEARCH_RESULT_LIMIT` (10) items. Price is an inclusive ceiling. Sizes match complete slash-separated tokens (M matches S/M, L does not match XL); parenthetical notes are ignored, and one-size items match any requested size.
 - **When it has nothing:** Returns an empty list `[]` when no listings match, including descriptions with no searchable keywords.
+- **Over MCP (Unit 4):** Registered in `mcp_server.py`; `run_agent()` calls it through `mcp_client.call_tool`. Results are identical to the direct call, including `[]`.
 
 ### `suggest_outfit`
 
