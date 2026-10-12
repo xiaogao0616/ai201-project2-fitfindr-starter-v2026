@@ -248,7 +248,8 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
     prompt = f"""
 Write a short, natural social-media fit card in two to four sentences.
 
-Mention the item title, its price, and its platform once each. Describe the
+Use the ITEM TITLE below word for word, exactly as written, once; do not
+paraphrase or shorten it. Mention its price and platform once each. Describe the
 outfit vibe specifically. Do not write a product listing or use bullet points.
 
 ITEM TITLE: {new_item.get('title', 'Unknown item')}
