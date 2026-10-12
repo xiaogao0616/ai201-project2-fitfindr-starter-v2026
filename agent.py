@@ -16,7 +16,7 @@ import re
 import config
 import trace
 from tools import suggest_outfit, create_fit_card
-from mcp_client import call_tool
+from mcp_client import call_tool, MCPError
 from generate import ModelUnavailable
 
 
@@ -141,8 +141,13 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         "max_price": max_price,
     }
 
+    trace.check_iterations(1)  # one pass: the loop never goes round again
+    trace.step("parse_query", inputs=query, returned=str(session["parsed"]))
+
     try:
         session["search_results"] = call_tool("search_listings", session["parsed"])
+        trace.step("search_listings (via MCP)", inputs=str(session["parsed"]),
+                   returned=session["search_results"])
 
         # The branch: stop immediately when no listing was found.
         if not session["search_results"]:
@@ -150,22 +155,45 @@ def run_agent(query: str, wardrobe: dict) -> dict:
                 "No listings matched your search. Try changing the description, "
                 "removing the size filter, or increasing the maximum price."
             )
+            trace.step("branch", note="search empty, stopping before suggest_outfit")
             return session
 
         session["selected_item"] = session["search_results"][0]
+        trace.step("select_item", returned=session["selected_item"],
+                   note="first (best-scoring) result")
 
         session["outfit_suggestion"] = suggest_outfit(
             session["selected_item"],
             session["wardrobe"],
         )
+        trace.step("suggest_outfit",
+                   inputs=f"new_item={session['selected_item']['title']!r}, "
+                          f"wardrobe={len(session['wardrobe'].get('items', []))} items",
+                   returned=session["outfit_suggestion"])
 
         session["fit_card"] = create_fit_card(
             session["outfit_suggestion"],
             session["selected_item"],
         )
+        trace.step("create_fit_card",
+                   inputs=f"outfit={len(session['outfit_suggestion'])} chars, "
+                          f"new_item={session['selected_item']['title']!r}",
+                   returned=session["fit_card"])
 
     except ModelUnavailable as exc:
-        session["error"] = f"The model is unavailable: {exc}"
+        found = session["selected_item"]
+        session["error"] = (
+            f"The search worked, but the outfit model couldn't be reached, so no outfit "
+            f"or fit card was made. {exc}"
+            + (f" Best match meanwhile: {found['title']} (${found['price']}, {found['platform']})." if found else "")
+        )
+        trace.step("error", note=f"ModelUnavailable: {exc}")
+    except MCPError as exc:
+        session["error"] = (
+            "The listing search service (MCP server) couldn't be reached, so nothing was searched. "
+            "Run `python mcp_server.py` on its own to see why it won't start, then try again."
+        )
+        trace.step("error", note=f"MCPError: {str(exc).splitlines()[0]}")
 
     return session
 
