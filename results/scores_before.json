@@ -1,0 +1,194 @@
+[
+  {
+    "scenario": "matching query completes",
+    "criterion": 1,
+    "query": "vintage graphic tee under $30",
+    "tries": [
+      {
+        "pass": true,
+        "why": "fit card returned",
+        "fit_card": "Channel total early-2000s street style by pairing this cropped Y2K Baby Tee — Butterfly Print with baggy dark-wash jeans and chunky white sneakers. Grab it on depop for just $18.0 to instantly nail that effortless, everyday proportion play."
+      },
+      {
+        "pass": true,
+        "why": "fit card returned",
+        "fit_card": "Channel ultimate retro streetwear energy by styling this Y2K Baby Tee — Butterfly Print with baggy dark-wash jeans, a cropped zip hoodie, and chunky white sneakers. It's an effortless, perfectly balanced silhouette that you can grab right now on depop for just $18.0."
+      },
+      {
+        "pass": true,
+        "why": "fit card returned",
+        "fit_card": "Channel peak 2000s streetwear energy by pairing the Y2K Baby Tee — Butterfly Print with baggy dark-wash jeans and chunky white sneakers. Add a minimal black crossbody bag for an effortless, comfortable vibe that totally nails that classic cropped-and-baggy silhouette. You can grab this cute top right now on depop for just $18.0!"
+      },
+      {
+        "pass": true,
+        "why": "fit card returned",
+        "fit_card": "Channel total early-2000s energy by styling this Y2K Baby Tee — Butterfly Print with dark wash baggy jeans, a vintage denim jacket, and chunky white sneakers for the ultimate casual streetwear vibe. You can grab it right now on depop for just $18.0!"
+      },
+      {
+        "pass": true,
+        "why": "fit card returned",
+        "fit_card": "Channel true early 2000s street style by pairing this Y2K Baby Tee — Butterfly Print with high-waisted, baggy dark-wash jeans and chunky white sneakers. Grab it on depop for just 18.0 to easily nail that cropped-versus-baggy proportion for your everyday errands. Toss on a black crossbody bag to complete this effortless, practical streetwear vibe!"
+      }
+    ]
+  },
+  {
+    "scenario": "impossible query stops early",
+    "criterion": 2,
+    "query": "designer ballgown size XXS under $5",
+    "tries": [
+      {
+        "pass": true,
+        "why": "suggest_outfit calls=0, error='No listings matched your search. Try changing the description, removing the size filter, or increasing the maximum price.'",
+        "fit_card": null
+      },
+      {
+        "pass": true,
+        "why": "suggest_outfit calls=0, error='No listings matched your search. Try changing the description, removing the size filter, or increasing the maximum price.'",
+        "fit_card": null
+      },
+      {
+        "pass": true,
+        "why": "suggest_outfit calls=0, error='No listings matched your search. Try changing the description, removing the size filter, or increasing the maximum price.'",
+        "fit_card": null
+      },
+      {
+        "pass": true,
+        "why": "suggest_outfit calls=0, error='No listings matched your search. Try changing the description, removing the size filter, or increasing the maximum price.'",
+        "fit_card": null
+      },
+      {
+        "pass": true,
+        "why": "suggest_outfit calls=0, error='No listings matched your search. Try changing the description, removing the size filter, or increasing the maximum price.'",
+        "fit_card": null
+      }
+    ]
+  },
+  {
+    "scenario": "empty wardrobe",
+    "criterion": null,
+    "query": "denim jacket under $50",
+    "tries": [
+      {
+        "pass": null,
+        "why": "diagnostic",
+        "fit_card": "Channel effortless off-duty cool by throwing this Light Wash Cropped Denim Jacket over a crisp white baby tee and high-waisted charcoal trousers, finished off with retro sneakers and a sleek shoulder bag. You can grab this versatile piece right now on Poshmark for just $42!"
+      },
+      {
+        "pass": null,
+        "why": "diagnostic",
+        "fit_card": "Channel that effortless off-duty aesthetic by pairing a floral midi dress with chunky black boots for the ultimate sweet-and-edgy daytime look. Grab this Denim Jacket — Light Wash, Cropped for just $42.0 on Poshmark to instantly tie the whole outfit together."
+      },
+      {
+        "pass": null,
+        "why": "diagnostic",
+        "fit_card": "Channel your inner off-duty model by pairing this Light Wash, Cropped Denim Jacket over a fitted white tank and black wide-leg trousers for that effortlessly cool streetwear vibe. Grab it over on Poshmark for just $42 to instantly elevate your casual wardrobe with high-contrast style."
+      },
+      {
+        "pass": null,
+        "why": "diagnostic",
+        "fit_card": "Channel that effortless off-duty model vibe by layering a fitted baby tee over high-waisted black trousers with fresh white sneakers. This Denim Jacket — Light Wash, Cropped adds the ultimate cool-girl edge to any casual day, and it's currently listed on poshmark for just $42.0."
+      },
+      {
+        "pass": null,
+        "why": "diagnostic",
+        "fit_card": "Channel off-duty model energy with this cropped light-wash Denim Jacket, perfect for pairing with wide-leg black trousers and retro sneakers. Grab this effortless staple on Poshmark right now for just $42!"
+      }
+    ]
+  },
+  {
+    "scenario": "selected item is what suggest_outfit gets",
+    "criterion": 3,
+    "query": "90s track jacket in size M",
+    "tries": [
+      {
+        "pass": true,
+        "why": "same object",
+        "fit_card": "Channel effortless retro streetwear by throwing on this 90s Track Jacket — Navy/White Stripe over a fitted tank and baggy denim, or dress it up with tailored khaki trousers for an elevated sporty vibe. Snag this versatile piece over on poshmark for just $45.00 to complete your everyday wardrobe rotations."
+      },
+      {
+        "pass": true,
+        "why": "same object",
+        "fit_card": "Channel effortless retro streetwear by pairing this 90s Track Jacket — Navy/White Stripe with baggy dark-wash denim and chunky white sneakers. Grab this sporty-cool piece over on poshmark right now for just $45.00 to complete your everyday wardrobe rotation."
+      },
+      {
+        "pass": true,
+        "why": "same object",
+        "fit_card": "Channel serious retro sportswear energy by styling this 90s Track Jacket — Navy/White Stripe over a white ribbed tank with baggy dark-wash denim and chunky white sneakers. It's the ultimate casual streetwear look for effortless everyday wear, and I've just listed it on poshmark for $45.00!"
+      },
+      {
+        "pass": true,
+        "why": "same object",
+        "fit_card": "Channel that effortless 90s athletic aesthetic by pairing the 90s Track Jacket — Navy/White Stripe with baggy dark-wash jeans and chunky sneakers for the ultimate casual streetwear vibe. You can grab this sporty zip-up on Poshmark for just $45.00 to instantly elevate your everyday wardrobe rotation."
+      },
+      {
+        "pass": true,
+        "why": "same object",
+        "fit_card": "Channel effortless retro-streetwear energy by styling the 90s Track Jacket — Navy/White Stripe over a fitted white tank and baggy dark-wash jeans. Tie the whole sporty casual look together with chunky white sneakers and a sleek crossbody bag for just $45.00 on poshmark."
+      }
+    ]
+  },
+  {
+    "scenario": "fit card names title and price",
+    "criterion": 4,
+    "query": "silk slip dress in midi length under $40",
+    "tries": [
+      {
+        "pass": false,
+        "why": "title=NO, price=yes",
+        "fit_card": "Channel your inner 90s icon by pairing this floral silk slip dress with a distressed denim jacket and chunky combat boots. It’s the ultimate grunge-meets-feminine contrast for effortless everyday styling. Find it listed on depop for just $30.0!"
+      },
+      {
+        "pass": true,
+        "why": "title=yes, price=yes",
+        "fit_card": "Channel your inner 90s icon by styling this floral midi with a distressed denim jacket and chunky combat boots for the ultimate grunge-meets-delicate streetwear vibe. You can snag this exact 90s Silk Slip Dress — Floral, Midi Length on depop right now for just $30.0!"
+      },
+      {
+        "pass": false,
+        "why": "title=NO, price=yes",
+        "fit_card": "Channel ultimate 90s grunge-chic by pairing this floral midi dress with a vintage black denim jacket and rugged combat boots for the perfect effortless contrast. It's listed on depop right now for just $30.0! Throw on a minimalist black crossbody bag to ground the lightweight silk for everyday wear."
+      },
+      {
+        "pass": false,
+        "why": "title=NO, price=yes",
+        "fit_card": "Channeling the ultimate 90s grunge contrast, this floral midi slip dress is styled with a distressed denim jacket and chunky combat boots to balance its sweet, feminine drape. Snag this dreamy silk piece for just $30.0 over on depop before it's gone!"
+      },
+      {
+        "pass": true,
+        "why": "title=yes, price=yes",
+        "fit_card": "Channel effortless 90s grunge by styling this floral midi with a cozy oversized grey crewneck and chunky black combat boots. I just scored the 90s Silk Slip Dress — Floral, Midi Length on depop for an amazing $30.0! It's the ultimate soft-meets-edgy look for everyday wear."
+      }
+    ]
+  },
+  {
+    "scenario": "nothing over the price ceiling",
+    "criterion": 5,
+    "query": "vintage jacket under $25",
+    "tries": [
+      {
+        "pass": true,
+        "why": "10 results, max $25.0, over ceiling: 0",
+        "fit_card": "Channel total early-2000s street style by pairing this Y2K Baby Tee — Butterfly Print with baggy dark-wash jeans and chunky white sneakers. Complete the effortless everyday look with a simple black crossbody bag. You can grab this vintage-vibed piece right now on depop for just 18.0!"
+      },
+      {
+        "pass": true,
+        "why": "10 results, max $25.0, over ceiling: 0",
+        "fit_card": "Channel ultimate 2000s streetwear by pairing the Y2K Baby Tee — Butterfly Print with baggy dark-wash jeans and chunky white sneakers for that classic fitted-versus-baggy proportion. Add a minimal black crossbody bag to keep this retro, comfortable look effortlessly cool. You can grab it over on depop for just $18.0!"
+      },
+      {
+        "pass": true,
+        "why": "10 results, max $25.0, over ceiling: 0",
+        "fit_card": "Channel your inner 2000s pop star with this casual-cool Y2K streetwear look featuring baggy dark-wash jeans and chunky white sneakers. Grab the Y2K Baby Tee — Butterfly Print for just $18.0 exclusively on depop to nail that iconic fitted-top-and-baggy-bottom silhouette."
+      },
+      {
+        "pass": true,
+        "why": "10 results, max $25.0, over ceiling: 0",
+        "fit_card": "Channel ultimate early-2000s streetwear energy by pairing fitted silhouettes with baggy bottoms for a classic, effortless everyday look. Toss on the Y2K Baby Tee — Butterfly Print with some dark-wash straight-leg jeans, a cropped black zip hoodie, and chunky white sneakers. You can score this piece right now on depop for just $18.0!"
+      },
+      {
+        "pass": true,
+        "why": "10 results, max $25.0, over ceiling: 0",
+        "fit_card": "Channel early 2000s streetwear by pairing the Y2K Baby Tee — Butterfly Print with baggy dark-wash jeans and chunky white sneakers. Add a black crossbody bag to complete this effortless, casual look. You can grab this cute top on depop right now for just 18.0!"
+      }
+    ]
+  }
+]
