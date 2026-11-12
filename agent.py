@@ -65,7 +65,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         the run ended early and the later fields will still be None.
 
     ─────────────────────────────────────────────────────────────────────────
-    TODO — build this, following the branch rule you wrote in Milestone 2.
+    Steps, following the branch rule from Milestone 2:
 
       1. Start a session with new_session().
 
@@ -108,7 +108,6 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     """
     session = new_session(query, wardrobe)
 
-    # TODO: delete these two lines and build the loop.
     # Parse optional size, for example: "size M"
     size_match = re.search(
         r"\b(?:size\s*)?(XXS|XS|S|M|L|XL|XXL)\b",
