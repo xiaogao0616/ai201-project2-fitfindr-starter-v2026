@@ -14,9 +14,7 @@ slow and nothing changes between runs while you're learning the shape.
     python mcp_client.py        asks the server what it offers
 
 ─────────────────────────────────────────────────────────────────────────────
-TODO — register one tool.
-
-Uncomment the block below and fill it in. Three things matter:
+Registering one tool. Three things matter:
 
   1. **The name.** Exactly what your agent will ask for.
 
@@ -67,8 +65,7 @@ from tools import search_listings as _search_listings_impl
 mcp = FastMCP("fitfindr", log_level="WARNING")
 
 
-# ── TODO: uncomment and fill this in ──────────────────────────────────────────
-#
+# ── search_listings ───────────────────────────────────────────────────────────
 @mcp.tool()
 def search_listings(
     description: str,
