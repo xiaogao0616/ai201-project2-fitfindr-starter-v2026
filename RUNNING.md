@@ -260,14 +260,36 @@ only thing the environment needs beyond the packages is a `GEMINI_API_KEY` in
 
 **From a clean checkout:**
 
+macOS / Linux:
+
 ```bash
 git clone https://github.com/xiaogao0616/ai201-project2-fitfindr-starter-v2026.git
 cd ai201-project2-fitfindr-starter-v2026
-python3 -m venv .venv               # Windows: python -m venv .venv  (python3 there opens the Microsoft Store)
-source .venv/bin/activate            # Windows: .venv\Scripts\Activate.ps1
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env                 # Windows: copy .env.example .env — then paste your key
+cp .env.example .env
 ```
+
+Windows (PowerShell). Use `python`, not `python3`:
+
+```powershell
+git clone https://github.com/xiaogao0616/ai201-project2-fitfindr-starter-v2026.git
+cd ai201-project2-fitfindr-starter-v2026
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+copy .env.example .env
+```
+
+Then open the new `.env` file (not `.env.example`) and replace `your_key_here`
+with your Gemini API key, no spaces around the `=`:
+
+```
+GEMINI_API_KEY=your-real-key
+```
+
+Check the setup with `python test.py` before starting.
 
 **The one command that starts it:**
 
@@ -275,17 +297,21 @@ cp .env.example .env                 # Windows: copy .env.example .env — then 
 python serve.py
 ```
 
-It listens on `http://localhost:5000`. Ask it something from a second terminal:
+It listens on `http://localhost:5000`. Leave that terminal running, open a second terminal in the same folder, and send a request.
+
+macOS / Linux:
 
 ```bash
 curl -X POST http://localhost:5000/ask -H 'Content-Type: application/json' \
   -d '{"query": "platform sneakers size 8"}'
 ```
 
-Windows PowerShell (curl there is a different program):
+Windows (PowerShell). Use `Invoke-RestMethod`, not `curl`:
 
 ```powershell
-Invoke-RestMethod -Method Post -Uri http://localhost:5000/ask -ContentType 'application/json' -Body '{"query": "platform sneakers size 8"}'
+Invoke-RestMethod -Method Post -Uri http://localhost:5000/ask `
+  -ContentType 'application/json' `
+  -Body '{"query": "platform sneakers size 8"}'
 ```
 
 **Where the record goes:** every request appends one JSON line to
